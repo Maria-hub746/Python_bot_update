@@ -40,12 +40,13 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, value: str):
         super().__init__(value)
-        self.value: int = value
+        self.value: str = value
        
     @Field.value.setter
     def value(self, value):
         self._value = self.check_phone(value)
 
+    @staticmethod
     def check_phone(value):
         clean_phone = (
                         value.strip()
@@ -92,8 +93,8 @@ class Birthday:
 
         return date(int(args[1]), int(args[0]), int(value))
 
-class Record(Field):
-    def __init__(self, name, phone, birthday):
+class Record:
+    def __init__(self, name, phone=None, birthday=None):
         self.name = Name(name)
         self.phones = [Phone(phone)] if phone else []
         self.birthday = Birthday(birthday) if birthday else ''

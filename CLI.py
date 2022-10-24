@@ -1,21 +1,19 @@
 from CLI_classes import AddressBook, Record
 
-
 def corrector(handler):
     def wrapper(*args, **kwargs):
         try:
             result = handler(*args, **kwargs)
             return result
         except KeyError:
-            print('Enter user name.')
-        except ValueError:
-            print('Enter correct type.')
+            return 'Enter user name.'
+        except ValueError as e:
+            return e.args[0]
         except IndexError:
-            print('Give me name and phone')
+            return 'Give me name and phone'
         except TypeError:
-            print('Give me name and phone')
+            return 'Give me name and phone'
     return wrapper
-    
 @corrector
 def hello():
     return "Hello! How can I help you?"
@@ -118,6 +116,7 @@ def main():
         else:
             print(
                 f"Sorry, i don't know, what is '{go}', please, try again.\nAll commands: {information}")
+
 
 
 if __name__ == "__main__":
