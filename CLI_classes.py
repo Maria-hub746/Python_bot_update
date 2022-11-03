@@ -1,7 +1,7 @@
 from collections import UserDict
 from datetime import date
 from re import search
-
+import pickle
 
 class Field:
     def __init__(self, value):
@@ -33,6 +33,18 @@ class AddressBook(UserDict):
 
         if records:
             yield records
+
+    def write_contacts_to_file(self):
+        with open('pickle.contacts', 'wb') as file:
+            pickle.dump(self.data, file)
+
+    def read_contacts_from_file(self):
+        try:
+            with open('pickle.contacts', 'rb') as file:
+                contacts = pickle.load(file)
+                return contacts
+        except FileNotFoundError:
+            pass
 
 class Name(Field):
     pass

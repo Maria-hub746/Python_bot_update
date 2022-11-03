@@ -1,4 +1,6 @@
-from CLI_classes import AddressBook, Record
+from CLI_classes import AddressBook, Record, Name, Birthday
+from datetime import datetime
+
 
 def corrector(handler):
     def wrapper(*args, **kwargs):
@@ -66,6 +68,18 @@ def delete(data):
 def finish_work():
     return 'Good bye!'
 
+def search(data):
+    data = data[0]
+    for users in addressbook.values():
+        contacts = [phone.value for phone in users.phones]
+        #contacts1 = [name.value for phone in users.name]
+        for el in contacts:
+            if data in str(el):
+                return users
+        if data in users.name.value:
+            return users
+
+
 
 INFORMATION = {
     'add': add_new_contact,
@@ -77,10 +91,11 @@ INFORMATION = {
     'good bye': finish_work,
     'close': finish_work,
     'exit': finish_work,
-    'delete': delete
+    'delete': delete,
+    'search' : search
 }
 
-information =['add', 'add_phone', 'change', 'phone', 'hello', 'show all', 'good bye', 'close', 'exit', 'delete']
+information =['add', 'add_phone', 'change', 'phone', 'hello', 'show all', 'good bye', 'close', 'exit', 'delete', 'search']
 
 def create_data(data):
     name = data[0]
@@ -94,6 +109,11 @@ def create_data(data):
 
 
 def main():
+    contacts_in_file = addressbook.read_contacts_from_file()
+    if contacts_in_file:
+        for key, value in contacts_in_file.items():
+            addressbook.data[key] = value
+
     while True:
         go = input('Enter command: ').lower()
 
@@ -104,6 +124,12 @@ def main():
         elif go == "":
             continue
 
+        elif go in ("good bye", "close", "exit"):
+            print("Good bye!")
+            addressbook.write_contacts_to_file()
+            break
+
+
         elif go in INFORMATION:
             print(INFORMATION[go]())
             if INFORMATION[go]() == "Good bye!":
@@ -111,7 +137,7 @@ def main():
 
         elif go.split()[0] in INFORMATION:
             print(INFORMATION[go.split()[0]](go.split()[1:]))
-            
+
 
         else:
             print(
